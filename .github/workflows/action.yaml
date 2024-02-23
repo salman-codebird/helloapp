@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: cycodelabs/cimon-action@v0
+      with:
+          client-id: $Client_ID
+          secret: $Client_Secret
     - name: Checkout Repository
       uses: actions/checkout@v2
 
