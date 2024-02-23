@@ -15,8 +15,8 @@ jobs:
     steps:
     - uses: cycodelabs/cimon-action@v0
       with:
-          client-id: $Client_ID
-          secret: $Client_Secret
+          client-id: eu-a181449f-9daf-4cca-9a37-bb64f92dbc65
+          secret: 8b36a9e9-5387-4453-9fd7-0a48a0addc8f
     - name: Checkout Repository
       uses: actions/checkout@v2
 
