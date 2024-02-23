@@ -1,0 +1,38 @@
+name: Runtime Risks
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-and-monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install k3s
+      run: |
+        curl -sfL https://get.k3s.io | sh -
+        sudo cp /etc/rancher/k3s/k3s.yaml $HOME/k3s.yaml
+        sudo chown $USER $HOME/k3s.yaml
+        echo "KUBECONFIG=$HOME/k3s.yaml" >> $GITHUB_ENV
+
+    - name: Deploy test appliction
+      run: |
+        kubectl create deployment nginx --image=nginx
+        POD=$(kubectl get pod -l app=nginx -o name)
+
+    - name: Install Helm and kube-prometheus stack
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm install kps prometheus-community/kube-prometheus-stack
